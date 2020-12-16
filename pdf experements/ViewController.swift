@@ -18,11 +18,16 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+        
         gesture.addTarget(self, action: #selector(tapped))
         pdfView.addGestureRecognizer(gesture)
         searchBar.delegate = self
         searchBar.showsCancelButton = true
         navigationItem.titleView = searchBar
+        navigationController?.navigationBar.barTintColor = .clear
+//        navigationController?.navigationBar.isTranslucent = true
+        searchBar.searchTextField.backgroundColor = .lightGray
+        
         
         pdfView.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +48,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         thumbnailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         thumbnailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         thumbnailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        thumbnailView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        thumbnailView.heightAnchor.constraint(equalToConstant: 100).isActive = true
     }
     
     @objc func tapped() {
@@ -55,17 +60,34 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     
     func didMatchString(_ instance: PDFSelection) {
         let highlight = PDFAnnotation(bounds: (instance.bounds(for: instance.pages[0])), forType: .highlight, withProperties: nil)
-        let color = UIColor.green.withAlphaComponent(0.5)
-        color.setStroke()
-        highlight.color = UIColor.green.withAlphaComponent(0.5)
+        //let color = UIColor.green.withAlphaComponent(0.5)
+        let v = CGFloat.random(in: 0...1)
+        highlight.color = UIColor(red: 1, green: 1, blue: (1 - v), alpha: 1)
+        
         instance.pages[0].addAnnotation(highlight)
+    }
+    
+    func documentDidEndDocumentFind(_ notification: Notification) {
+//        view.setNeedsDisplay()
+//        pdfView.setNeedsDisplay()
+        
+//        pdfView.documentView?.reloadInputViews()
+//        pdfView.documentView?.setNeedsDisplay()
+//        pdfView.documentView?.setNeedsLayout()
+        
+        
+//        let currentPage = pdfView.currentPage!
+//        pdfView.goToLastPage(nil)
+//        pdfView.go(to: currentPage)
+//        print(pdfView.visiblePages)
+//        pdfView.document?.page(at: <#T##Int#>)
     }
     
     private func setupPDFView(with document: PDFDocument) {
         pdfView.backgroundColor = .black
-        pdfView.displayDirection = .horizontal
-        pdfView.usePageViewController(true)
-        pdfView.pageBreakMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+//        pdfView.displayDirection = .horizontal
+//        pdfView.usePageViewController(true)
+        pdfView.pageBreakMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         pdfView.autoScales = true
         pdfView.document = document
         view.addSubview(pdfView)
@@ -90,10 +112,14 @@ extension ViewController: UISearchBarDelegate {
                 pdfView.document!.page(at: i)!.removeAnnotation(annotation)
             }
         }
-        for word in searchBar.text!.split(separator: " ") {
-            pdfView.document!.beginFindString(String(word), withOptions: [.caseInsensitive])
-        }
-        pdfView.setNeedsDisplay()
+        
+        pdfView.document!.beginFindStrings(searchBar.text!.split(separator: " ").map{String($0)}, withOptions: .caseInsensitive)
+
+//        for word in searchBar.text!.split(separator: " ") {
+//            pdfView.document!.beginFindString(String(word), withOptions: [.caseInsensitive])
+//            pdfView.document!.findString(String(word), withOptions: [.caseInsensitive])
+//        }
+        
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -103,5 +129,9 @@ extension ViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.endEditing(false)
+//        pdfView.documentView?.reloadInputViews()
+//        pdfView.documentView?.setNeedsDisplay()
+//        pdfView.documentView?.setNeedsLayout()
+        
     }
 }
