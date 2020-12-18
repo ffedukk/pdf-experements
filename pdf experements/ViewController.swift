@@ -14,6 +14,10 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     let thumbnailView = PDFThumbnailView()
     let gesture = UITapGestureRecognizer()
     let searchBar = UISearchBar()
+    var test_dict: [String:SearchingStringAttributes] = ["ДОГ":SearchingStringAttributes(weight: 0.5),
+                                                         "ДОГОВОР":SearchingStringAttributes(weight: 0.5)]
+//                                                         "ВОР":SearchingStringAttributes(weight: 0.5),
+//                                                         "ДОГОВОРА":SearchingStringAttributes(weight: 0.5)]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,28 +63,69 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     }
     
     func didMatchString(_ instance: PDFSelection) {
-        let highlight = PDFAnnotation(bounds: (instance.bounds(for: instance.pages[0])), forType: .highlight, withProperties: nil)
-        //let color = UIColor.green.withAlphaComponent(0.5)
-        let v = CGFloat.random(in: 0...1)
-        highlight.color = UIColor(red: 1, green: 1, blue: (1 - v), alpha: 1)
+        let word = instance.string!.uppercased()
+        let page = instance.pages[0]
+        let rng = instance.range(at: 0, on: page)
         
-        instance.pages[0].addAnnotation(highlight)
+        if let ranges = test_dict[word]?.ranges {
+            for range in ranges {
+                let newInstance = pdfView.document!.selection(from: page, atCharacterIndex: rng.lowerBound + range.lowerBound, to: page, atCharacterIndex: rng.lowerBound + range.lowerBound + range.length - 1)!
+                let highlight = PDFAnnotation(bounds: (newInstance.bounds(for: page)), forType: .highlight, withProperties: nil)
+                highlight.color = UIColor(red: 1, green: 1 - CGFloat(test_dict[word]!.weight), blue: 1, alpha: 1)
+                page.addAnnotation(highlight)
+            }
+        }
+        
+//        let newInstance = pdfView.document!.selection(from: page, atCharacterIndex: rng.lowerBound, to: page, atCharacterIndex: rng.upperBound - 2)!
+//        let highlight = PDFAnnotation(bounds: (newInstance.bounds(for: page)), forType: .highlight, withProperties: nil)
+//        highlight.color = UIColor(red: 1, green: 1 - CGFloat(test_dict[word]!.weight), blue: 1, alpha: 1)
+//        page.addAnnotation(highlight)
+        
+//        let nsstr: NSString = "fghdgh"
+//        print(nsstr.range(of: "gh"), nsstr.contains("gh"),NSRange(location: 1, length: 2).union(NSRange(location: 5, length: 2)))
+        
     }
     
-    func documentDidEndDocumentFind(_ notification: Notification) {
-//        view.setNeedsDisplay()
-//        pdfView.setNeedsDisplay()
+    func getRanges(word: NSString) -> [NSRange] {
+        var result: [NSRange] = []
+        var ranges: [NSRange] = []
+        for anotherWord in test_dict.keys{
+            if NSString(string: anotherWord) != word && word.contains(anotherWord) {
+                var newRange = word.range(of: anotherWord, options: .caseInsensitive)
+                for range in ranges {
+                    if let _ = newRange.intersection(range) {
+                        newRange.formUnion(range)
+                        ranges.remove(at: ranges.firstIndex(of: range)!)
+                    }
+                }
+                ranges.append(newRange)
+            }
+        }
+        if ranges.isEmpty {
+            return [NSRange(location: 0, length: word.length)]
+        }
         
-//        pdfView.documentView?.reloadInputViews()
-//        pdfView.documentView?.setNeedsDisplay()
-//        pdfView.documentView?.setNeedsLayout()
-        
-        
-//        let currentPage = pdfView.currentPage!
-//        pdfView.goToLastPage(nil)
-//        pdfView.go(to: currentPage)
-//        print(pdfView.visiblePages)
-//        pdfView.document?.page(at: <#T##Int#>)
+        var lowerBound = 0
+        ranges.sort { (left, right) -> Bool in
+            left.location < right.location
+        }
+        for range in ranges {
+            if range.lowerBound != 0 {
+                result.append(NSRange(location: lowerBound, length: range.lowerBound - lowerBound))
+            }
+            lowerBound = range.upperBound
+        }
+        if lowerBound < word.length {
+            result.append(NSRange(location: lowerBound, length: word.length - lowerBound))
+        }
+        return result
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        test_dict.forEach { (key, value) in
+            value.ranges = getRanges(word: NSString(string: key))
+        }
     }
     
     private func setupPDFView(with document: PDFDocument) {
@@ -114,9 +159,9 @@ extension ViewController: UISearchBarDelegate {
         }
         
         pdfView.document!.beginFindStrings(searchBar.text!.split(separator: " ").map{String($0)}, withOptions: .caseInsensitive)
-
+        
 //        for word in searchBar.text!.split(separator: " ") {
-//            pdfView.document!.beginFindString(String(word), withOptions: [.caseInsensitive])
+////            pdfView.document!.beginFindString(String(word), withOptions: [.caseInsensitive])
 //            pdfView.document!.findString(String(word), withOptions: [.caseInsensitive])
 //        }
         
@@ -129,9 +174,5 @@ extension ViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.endEditing(false)
-//        pdfView.documentView?.reloadInputViews()
-//        pdfView.documentView?.setNeedsDisplay()
-//        pdfView.documentView?.setNeedsLayout()
-        
     }
 }

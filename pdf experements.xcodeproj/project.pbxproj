@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		302FE9DA258CEBFE00B84B35 /* SearchingStringAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FE9D9258CEBFE00B84B35 /* SearchingStringAttributes.swift */; };
 		30BAD955254C067C0053D75F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAD954254C067C0053D75F /* AppDelegate.swift */; };
 		30BAD957254C067C0053D75F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAD956254C067C0053D75F /* SceneDelegate.swift */; };
 		30BAD959254C067C0053D75F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAD958254C067C0053D75F /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		302FE9D9258CEBFE00B84B35 /* SearchingStringAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingStringAttributes.swift; sourceTree = "<group>"; };
 		30BAD951254C067C0053D75F /* pdf experements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pdf experements.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30BAD954254C067C0053D75F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30BAD956254C067C0053D75F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				30BAD95F254C06830053D75F /* LaunchScreen.storyboard */,
 				30BAD969254C075D0053D75F /* myFile.pdf */,
 				30BAD962254C06830053D75F /* Info.plist */,
+				302FE9D9258CEBFE00B84B35 /* SearchingStringAttributes.swift */,
 			);
 			path = "pdf experements";
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				302FE9DA258CEBFE00B84B35 /* SearchingStringAttributes.swift in Sources */,
 				30BAD959254C067C0053D75F /* ViewController.swift in Sources */,
 				30BAD955254C067C0053D75F /* AppDelegate.swift in Sources */,
 				30BAD957254C067C0053D75F /* SceneDelegate.swift in Sources */,
