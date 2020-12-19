@@ -14,7 +14,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     let thumbnailView = PDFThumbnailView()
     let gesture = UITapGestureRecognizer()
     let searchBar = UISearchBar()
-    var test_dict: [String:CGFloat] = ["ДОГ":0.6, "ДОГОВОР":0.6, "ДОГОВОРА":0.6, "ТРУД":0.3, "ТРУДОВОГО ДОГОВОРА":0.45, "ТРУДОВОГО":0.3]
+    var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,20 +72,21 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 //                page.addAnnotation(highlight)
 //            }
 //        }
-//        print(instance.range(at: 0, on: page))
+        
         var currentWeight: CGFloat = 0
         for annotation in page.annotations {
             if annotation.bounds.intersects(instance.bounds(for: page)) {
                 currentWeight += annotation.annotationKeyValues["/weight"] as! CGFloat
-                print(annotation.color)
             }
         }
-        
-//        print(currentWeight)
-        let weight = test_dict[word]! - currentWeight
+        var weight = test_dict[word]! - currentWeight
         if weight <= 0 { return }
+        weight = ceil(weight*1000)/1000
+        print(weight, currentWeight)
+        
         let highlight = PDFAnnotation(bounds: (instance.bounds(for: page)), forType: .highlight, withProperties: ["weight": weight])
-        highlight.color = UIColor(red: 1, green: 1 - weight, blue: 1, alpha: 1)
+//        highlight.color = UIColor(red: 1, green: 1 - weight, blue: 1, alpha: 1)
+        highlight.color = UIColor(red: 0, green: 1, blue: 0, alpha: weight)
         page.addAnnotation(highlight)
  
     }
@@ -162,13 +163,8 @@ extension ViewController: UISearchBarDelegate {
                 pdfView.document!.page(at: i)!.removeAnnotation(annotation)
             }
         }
-        
-        pdfView.document!.beginFindStrings(searchBar.text!.split(separator: " ").map{String($0)}, withOptions: .caseInsensitive)
-        
-//        for word in searchBar.text!.split(separator: " ") {
-////            pdfView.document!.beginFindString(String(word), withOptions: [.caseInsensitive])
-//            pdfView.document!.findString(String(word), withOptions: [.caseInsensitive])
-//        }
+        print(searchBar.text!.split(separator: " ").map{String($0).uppercased()}.sorted{ $0 > $1 })
+        pdfView.document!.beginFindStrings(searchBar.text!.split(separator: " ").map{String($0).uppercased()}.sorted{ $0 > $1 }, withOptions: .caseInsensitive)
         
     }
     
