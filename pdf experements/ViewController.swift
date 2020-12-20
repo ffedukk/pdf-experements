@@ -37,6 +37,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         stackView.spacing = 0
         stackView.layer.cornerRadius = 2
         stackView.layer.masksToBounds = true
+        stackView.isUserInteractionEnabled = false
         
         
         pdfView.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +56,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
                 v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
                 stackView.addArrangedSubview(v)
             }
+            
             
         }
         
@@ -78,6 +80,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
             (self.thumbnailView.alpha > 0) ? (self.thumbnailView.alpha = 0) : (self.thumbnailView.alpha = 1)
             ((self.navigationController?.navigationBar.alpha)! > 0) ? (self.navigationController?.navigationBar.alpha = 0) : (self.navigationController?.navigationBar.alpha = 1)
         }
+        searchBar.endEditing(false)
     }
     
     func didMatchString(_ instance: PDFSelection) {
