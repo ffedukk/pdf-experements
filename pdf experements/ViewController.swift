@@ -15,6 +15,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     let gesture = UITapGestureRecognizer()
     let searchBar = UISearchBar()
     var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2]
+    let stackView = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +30,14 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 //        navigationController?.navigationBar.isTranslucent = true
         searchBar.searchTextField.backgroundColor = .lightGray
         
+        stackView.backgroundColor = .lightGray
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 0
+        stackView.layer.cornerRadius = 2
+        stackView.layer.masksToBounds = true
+        
         
         pdfView.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +47,15 @@ class ViewController: UIViewController, PDFDocumentDelegate {
             
             pdf.delegate = self
             setupPDFView(with: pdf)
+            
             setupThumbnailView()
+            thumbnailView.addSubview(stackView)
+            for _ in 0..<pdf.pageCount {
+                let v = UIView()
+                v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
+                stackView.addArrangedSubview(v)
+            }
+            
         }
         
         
@@ -49,7 +66,11 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         thumbnailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         thumbnailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         thumbnailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        thumbnailView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        thumbnailView.heightAnchor.constraint(equalToConstant: 130).isActive = true
+        stackView.topAnchor.constraint(equalTo: thumbnailView.topAnchor, constant: 15).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 18).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 15).isActive = true
     }
     
     @objc func tapped() {
@@ -82,11 +103,11 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         var weight = test_dict[word]! - currentWeight
         if weight <= 0 { return }
         weight = ceil(weight*1000)/1000
-        print(weight, currentWeight)
+        //print(weight, currentWeight)
         
         let highlight = PDFAnnotation(bounds: (instance.bounds(for: page)), forType: .highlight, withProperties: ["weight": weight])
 //        highlight.color = UIColor(red: 1, green: 1 - weight, blue: 1, alpha: 1)
-        highlight.color = UIColor(red: 0, green: 1, blue: 0, alpha: weight)
+        highlight.color = UIColor(red: 1, green: 1, blue: 0, alpha: weight)
         page.addAnnotation(highlight)
  
     }
@@ -148,8 +169,9 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         thumbnailView.pdfView = pdfView
         thumbnailView.backgroundColor = .black
         thumbnailView.layoutMode = .horizontal
-        thumbnailView.thumbnailSize = CGSize(width: 40, height: 100)
-        thumbnailView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        thumbnailView.thumbnailSize = CGSize(width: 40, height: 70)
+        print(thumbnailView.layoutMargins)
+        thumbnailView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.addSubview(thumbnailView)
     }
 }
@@ -163,9 +185,12 @@ extension ViewController: UISearchBarDelegate {
                 pdfView.document!.page(at: i)!.removeAnnotation(annotation)
             }
         }
-        print(searchBar.text!.split(separator: " ").map{String($0).uppercased()}.sorted{ $0 > $1 })
         pdfView.document!.beginFindStrings(searchBar.text!.split(separator: " ").map{String($0).uppercased()}.sorted{ $0 > $1 }, withOptions: .caseInsensitive)
         
+        for v in stackView.subviews {
+            v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
+        }
+        stackView.setNeedsDisplay()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -175,5 +200,8 @@ extension ViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.endEditing(false)
+        for v in stackView.subviews {
+            v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0)
+        }
     }
 }
