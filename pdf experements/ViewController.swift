@@ -16,6 +16,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     let searchBar = UISearchBar()
     var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2]
     let stackView = UIStackView()
+    let currentPageView = MyUILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,8 +37,18 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         stackView.distribution = .fillEqually
         stackView.spacing = 0
         stackView.layer.cornerRadius = 2
-        stackView.layer.masksToBounds = true
+//        stackView.layer.masksToBounds = true
         stackView.isUserInteractionEnabled = false
+        
+    
+        currentPageView.translatesAutoresizingMaskIntoConstraints = false
+        currentPageView.font = UIFont.monospacedDigitSystemFont(ofSize: 17, weight: .medium)
+        currentPageView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.917, alpha: 0.9)
+        currentPageView.textColor = .darkGray
+        currentPageView.textAlignment = .center
+        currentPageView.layer.cornerRadius = 7
+        currentPageView.layer.masksToBounds = true
+        NotificationCenter.default.addObserver(self, selector: #selector(pageChanged), name: NSNotification.Name.PDFViewPageChanged, object: pdfView)
         
         
         pdfView.translatesAutoresizingMaskIntoConstraints = false
@@ -51,6 +62,8 @@ class ViewController: UIViewController, PDFDocumentDelegate {
             
             setupThumbnailView()
             thumbnailView.addSubview(stackView)
+            pdfView.addSubview(currentPageView)
+            currentPageView.text = "1 of \(pdf.pageCount)"
             for _ in 0..<pdf.pageCount {
                 let v = UIView()
                 v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
@@ -73,15 +86,28 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 18).isActive = true
         stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18).isActive = true
         stackView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        currentPageView.topAnchor.constraint(equalTo: pdfView.topAnchor, constant: 15).isActive = true
+        currentPageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15).isActive = true
+        //currentPageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        currentPageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     @objc func tapped() {
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.3) {
             (self.thumbnailView.alpha > 0) ? (self.thumbnailView.alpha = 0) : (self.thumbnailView.alpha = 1)
             ((self.navigationController?.navigationBar.alpha)! > 0) ? (self.navigationController?.navigationBar.alpha = 0) : (self.navigationController?.navigationBar.alpha = 1)
+            ((self.currentPageView.alpha) > 0) ? (self.currentPageView.alpha = 0) : (self.currentPageView.alpha = 1)
         }
         searchBar.endEditing(false)
     }
+    
+    @objc func pageChanged() {
+        if let page = pdfView.currentPage {
+            currentPageView.text = "\((pdfView.document?.index(for: page) ?? 0) + 1) of \(pdfView.document?.pageCount ?? 0)"
+        }
+    }
+    
+    
     
     func didMatchString(_ instance: PDFSelection) {
         let word = instance.string!.uppercased()
@@ -207,4 +233,21 @@ extension ViewController: UISearchBarDelegate {
             v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: 0)
         }
     }
+}
+
+
+class MyUILabel: UILabel {
+    
+    override func drawText(in rect: CGRect) {
+        let insets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+        super.drawText(in: rect.inset(by: insets))
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        var s = super.intrinsicContentSize
+        s.width += 10
+        return s
+    }
+    
+    
 }
