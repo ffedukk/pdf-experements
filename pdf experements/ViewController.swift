@@ -157,7 +157,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 
 		if isInReadingMode {
 
-			UIView.animate(withDuration: 0.2) {
+			UIView.animate(withDuration: 0.25) {
 //				firstSubview?.contentInset.top = self.view.safeAreaInsets.top
 //				firstSubview?.contentInset.bottom = self.thumbnailView.frame.height
 				firstSubview?.contentInset.top = 0
@@ -167,6 +167,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 				self.currentPageView.transform = CGAffineTransform.identity
 				self.currentPageView.alpha = 1
 				self.thumbnailView.alpha = 1
+				self.navigationController?.navigationBar.alpha = 1
 
 			} completion: { (_) in
 
@@ -191,14 +192,15 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 //			bottomResizableConstraint.isActive = true
 //			firstSubview?.contentInset.top = view.safeAreaInsets.top
 //			firstSubview?.contentInset.bottom = thumbnailView.frame.height
-			UIView.animate(withDuration: 0.2) {
-				firstSubview?.contentInset.top = 40
+			UIView.animate(withDuration: 0.25) {
+				firstSubview?.contentInset.top = self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
 				firstSubview?.contentInset.bottom = self.view.safeAreaInsets.bottom
 				self.navigationController?.navigationBar.transform = CGAffineTransform(translationX: 0, y: -self.view.safeAreaInsets.top)
 				self.thumbnailView.transform = CGAffineTransform(translationX: 0, y: self.thumbnailView.frame.height)
 				self.currentPageView.transform = CGAffineTransform(translationX: 0, y: self.thumbnailView.frame.height)
 				self.currentPageView.alpha = 0
 				self.thumbnailView.alpha = 0
+				self.navigationController?.navigationBar.alpha = 0
 			}
 
 //			bottomResizableConstraint.constant += thumbnailView.frame.height + view.safeAreaInsets.bottom
