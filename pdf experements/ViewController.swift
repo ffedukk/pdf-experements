@@ -17,6 +17,10 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2]
     let stackView = UIStackView()
     let currentPageView = MyUILabel()
+	var isInReadingMode: Bool = false
+
+	var topResizableConstraint = NSLayoutConstraint()
+	var bottomResizableConstraint = NSLayoutConstraint()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +32,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         searchBar.showsCancelButton = true
         navigationItem.titleView = searchBar
         navigationController?.navigationBar.barTintColor = .clear
-//        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.isTranslucent = true
         searchBar.searchTextField.backgroundColor = .lightGray
         
         stackView.backgroundColor = .lightGray
@@ -37,7 +41,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         stackView.distribution = .fillEqually
         stackView.spacing = 0
         stackView.layer.cornerRadius = 2
-//        stackView.layer.masksToBounds = true
+        stackView.layer.masksToBounds = true
         stackView.isUserInteractionEnabled = false
         
     
@@ -69,35 +73,140 @@ class ViewController: UIViewController, PDFDocumentDelegate {
                 v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
                 stackView.addArrangedSubview(v)
             }
-            
-            
+
+
+//			edgesForExtendedLayout = []
         }
         
-        
-        pdfView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        pdfView.bottomAnchor.constraint(equalTo: thumbnailView.topAnchor).isActive = true
+		topResizableConstraint = pdfView.topAnchor.constraint(equalTo: view.topAnchor)
+//		topResizableConstraint = pdfView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+		topResizableConstraint.isActive = true
+
+//		bottomResizableConstraint = pdfView.bottomAnchor.constraint(equalTo: thumbnailView.topAnchor)
+		bottomResizableConstraint = pdfView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+		bottomResizableConstraint.isActive = true
         pdfView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         pdfView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        thumbnailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+
+//		bottomResizableConstraint = thumbnailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+//		bottomResizableConstraint.isActive = true
+		thumbnailView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         thumbnailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         thumbnailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        thumbnailView.heightAnchor.constraint(equalToConstant: 130).isActive = true
+		thumbnailView.heightAnchor.constraint(equalToConstant: 130).isActive = true
+
         stackView.topAnchor.constraint(equalTo: thumbnailView.topAnchor, constant: 15).isActive = true
         stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 18).isActive = true
         stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18).isActive = true
         stackView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-        currentPageView.topAnchor.constraint(equalTo: pdfView.topAnchor, constant: 15).isActive = true
+
+        currentPageView.bottomAnchor.constraint(equalTo: thumbnailView.topAnchor, constant: -15).isActive = true
         currentPageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15).isActive = true
         //currentPageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         currentPageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+		//pdfView.setContentHuggingPriority(UILayoutPriority(rawValue: 2000), for: .vertical)
     }
-    
+
+	override var prefersStatusBarHidden: Bool { return true }
+
     @objc func tapped() {
-        UIView.animate(withDuration: 0.3) {
-            (self.thumbnailView.alpha > 0) ? (self.thumbnailView.alpha = 0) : (self.thumbnailView.alpha = 1)
-            ((self.navigationController?.navigationBar.alpha)! > 0) ? (self.navigationController?.navigationBar.alpha = 0) : (self.navigationController?.navigationBar.alpha = 1)
-            ((self.currentPageView.alpha) > 0) ? (self.currentPageView.alpha = 0) : (self.currentPageView.alpha = 1)
-        }
+//        UIView.animate(withDuration: 0.3) {
+//            //(self.thumbnailView.alpha > 0) ? (self.thumbnailView.alpha = 0) : (self.thumbnailView.alpha = 1)
+//            //((self.navigationController?.navigationBar.alpha)! > 0) ? (self.navigationController?.navigationBar.alpha = 0) : (self.navigationController?.navigationBar.alpha = 1)
+//            ((self.currentPageView.alpha) > 0) ? (self.currentPageView.alpha = 0) : (self.currentPageView.alpha = 1)
+		//			self.thumbnailView.transform = CGAffineTransform(translationX: 0, y: 200)
+		//			self.navigationController?.navigationBar.transform = CGAffineTransform(translationX: 0, y: -200)
+		//			//self.pdfView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+		//			//self.pdfView.bottomAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+		//
+		//        }
+
+
+
+
+
+//		UIView.animate(withDuration: 0.5) {
+//			self.setNeedsStatusBarAppearanceUpdate()
+//			if self.isInReadingMode {
+//				self.navigationController?.navigationBar.alpha = 1
+//				self.currentPageView.alpha = 1
+//
+//				self.navigationController?.navigationBar.transform = CGAffineTransform.identity
+//				self.thumbnailView.transform = CGAffineTransform.identity
+//			} else {
+//				//(self.thumbnailView.alpha > 0) ? (self.thumbnailView.alpha = 0) : (self.thumbnailView.alpha = 1)
+//				self.navigationController?.navigationBar.alpha = 0
+//				self.currentPageView.alpha = 0
+//
+//				self.navigationController?.navigationBar.transform = CGAffineTransform(translationX: 0, y: -200)
+//				self.thumbnailView.transform = CGAffineTransform(translationX: 0, y: 200)
+//			}
+//		} completion: { _ in
+//			if self.isInReadingMode {
+//				self.pdfView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+//				self.pdfView.bottomAnchor.constraint(equalTo: self.thumbnailView.topAnchor).isActive = true
+//				self.isInReadingMode = false
+//			} else {
+//				self.pdfView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+//				self.pdfView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+//				self.isInReadingMode = true
+//			}
+//		}
+
+		let firstSubview = pdfView.subviews.first as? UIScrollView
+
+		if isInReadingMode {
+
+			UIView.animate(withDuration: 0.2) {
+//				firstSubview?.contentInset.top = self.view.safeAreaInsets.top
+//				firstSubview?.contentInset.bottom = self.thumbnailView.frame.height
+				firstSubview?.contentInset.top = 0
+				firstSubview?.contentInset.bottom = 0
+				self.navigationController?.navigationBar.transform = CGAffineTransform.identity
+				self.thumbnailView.transform = CGAffineTransform.identity
+				self.currentPageView.transform = CGAffineTransform.identity
+				self.currentPageView.alpha = 1
+				self.thumbnailView.alpha = 1
+
+			} completion: { (_) in
+
+//				self.topResizableConstraint.isActive = false
+//				self.bottomResizableConstraint.isActive = false
+//				self.topResizableConstraint = self.pdfView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor)
+//				self.bottomResizableConstraint = self.pdfView.bottomAnchor.constraint(equalTo: self.thumbnailView.topAnchor)
+//				self.topResizableConstraint.isActive = true
+//				self.bottomResizableConstraint.isActive = true
+			}
+
+//			bottomResizableConstraint.constant -= thumbnailView.frame.height + view.safeAreaInsets.bottom
+//			self.navigationController?.navigationBar.isHidden = false
+//			currentPageView.isHidden = false
+			isInReadingMode = false
+		} else {
+//			topResizableConstraint.isActive = false
+//			bottomResizableConstraint.isActive = false
+//			topResizableConstraint = pdfView.topAnchor.constraint(equalTo: view.topAnchor)
+//			bottomResizableConstraint = pdfView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//			topResizableConstraint.isActive = true
+//			bottomResizableConstraint.isActive = true
+//			firstSubview?.contentInset.top = view.safeAreaInsets.top
+//			firstSubview?.contentInset.bottom = thumbnailView.frame.height
+			UIView.animate(withDuration: 0.2) {
+				firstSubview?.contentInset.top = 40
+				firstSubview?.contentInset.bottom = self.view.safeAreaInsets.bottom
+				self.navigationController?.navigationBar.transform = CGAffineTransform(translationX: 0, y: -self.view.safeAreaInsets.top)
+				self.thumbnailView.transform = CGAffineTransform(translationX: 0, y: self.thumbnailView.frame.height)
+				self.currentPageView.transform = CGAffineTransform(translationX: 0, y: self.thumbnailView.frame.height)
+				self.currentPageView.alpha = 0
+				self.thumbnailView.alpha = 0
+			}
+
+//			bottomResizableConstraint.constant += thumbnailView.frame.height + view.safeAreaInsets.bottom
+//			self.navigationController?.navigationBar.isHidden = true
+//			currentPageView.isHidden = true
+			isInReadingMode = true
+		}
+		setNeedsStatusBarAppearanceUpdate()
         searchBar.endEditing(false)
     }
     
@@ -181,28 +290,40 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 //        test_dict.forEach { (key, value) in
 //            value.ranges = getRanges(word: NSString(string: key))
 //        }
+		pdfView.minScaleFactor = pdfView.scaleFactor
+		let firstSubview = pdfView.subviews.first as? UIScrollView
+		if let firstSubview = firstSubview {
+//			firstSubview.contentInset = UIEdgeInsets(top: view.safeAreaInsets.top, left: 0, bottom: thumbnailView.frame.height, right: 0);
+//			firstSubview.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
+			firstSubview.contentInsetAdjustmentBehavior = .never
+//			firstSubview.contentOffset.y = -view.safeAreaInsets.top
+			firstSubview.contentOffset.y = 0
+		}
         pdfView.document?.beginFindStrings(test_dict.keys.sorted { $0 > $1 }, withOptions: .caseInsensitive)
     }
     
+
+    
     private func setupPDFView(with document: PDFDocument) {
-        pdfView.backgroundColor = .black
+        pdfView.backgroundColor = .lightGray
 //        pdfView.displayDirection = .horizontal
 //        pdfView.usePageViewController(true)
-        pdfView.pageBreakMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+
+        pdfView.pageBreakMargins = UIEdgeInsets(top: 2, left: 0, bottom: 2, right: 0)
         pdfView.autoScales = true
         pdfView.document = document
         view.addSubview(pdfView)
     }
     
-    private func setupThumbnailView() {
-        thumbnailView.pdfView = pdfView
-        thumbnailView.backgroundColor = .black
-        thumbnailView.layoutMode = .horizontal
-        thumbnailView.thumbnailSize = CGSize(width: 40, height: 70)
-        print(thumbnailView.layoutMargins)
-        thumbnailView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
-        view.addSubview(thumbnailView)
-    }
+	private func setupThumbnailView() {
+		thumbnailView.pdfView = pdfView
+		thumbnailView.backgroundColor = .black
+		thumbnailView.layoutMode = .horizontal
+		thumbnailView.thumbnailSize = CGSize(width: 40, height: 70)
+		print(thumbnailView.layoutMargins)
+		thumbnailView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
+		view.addSubview(thumbnailView)
+	}
 }
 
 extension ViewController: UISearchBarDelegate {
