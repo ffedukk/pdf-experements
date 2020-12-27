@@ -14,7 +14,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
     let thumbnailView = PDFThumbnailView()
     let gesture = UITapGestureRecognizer()
     let searchBar = UISearchBar()
-    var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2]
+	var test_dict: [String:CGFloat] = ["ДОГ":0.8, "ДОГОВОР":0.8, "ДОГОВОРА":0.8, "ТРУД":0.2, "ТРУДОВОГО ДОГОВОРА":0.5, "ТРУДОВОГО":0.2, "ARRAY": 0.7, "NSARRAY": 0.4, "NSMUTABLEARRAY": 0.4]
     let stackView = UIStackView()
     let currentPageView = MyUILabel()
 	var isInReadingMode: Bool = false
@@ -58,7 +58,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         pdfView.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
 
-        if let path = Bundle.main.path(forResource: "myFile", ofType: "pdf"),
+        if let path = Bundle.main.path(forResource: "Programming in Objective-C - 6th Edition", ofType: "pdf"),
            let pdf = PDFDocument(url: URL(fileURLWithPath: path)) {
             
             pdf.delegate = self
@@ -70,7 +70,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
             currentPageView.text = "1 of \(pdf.pageCount)"
             for _ in 0..<pdf.pageCount {
                 let v = UIView()
-                v.backgroundColor = UIColor(red: 1, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
+                v.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: CGFloat.random(in: 0...1))
                 stackView.addArrangedSubview(v)
             }
 
@@ -237,17 +237,17 @@ class ViewController: UIViewController, PDFDocumentDelegate {
         var currentWeight: CGFloat = 0
         for annotation in page.annotations {
             if annotation.bounds.intersects(instance.bounds(for: page)) {
-                currentWeight += annotation.annotationKeyValues["/weight"] as! CGFloat
+                currentWeight += (annotation.annotationKeyValues["/weight"] ?? CGFloat(0)) as! CGFloat
             }
         }
-        var weight = test_dict[word]! - currentWeight
+		var weight = test_dict[word]! - 0.6 * currentWeight
         if weight <= 0 { return }
         weight = ceil(weight*1000)/1000
         //print(weight, currentWeight)
         
         let highlight = PDFAnnotation(bounds: (instance.bounds(for: page)), forType: .highlight, withProperties: ["weight": weight])
 //        highlight.color = UIColor(red: 1, green: 1 - weight, blue: 1, alpha: 1)
-        highlight.color = UIColor(red: 1, green: 1, blue: 0, alpha: weight)
+        highlight.color = UIColor(red: 0, green: 1, blue: 0, alpha: weight)
         page.addAnnotation(highlight)
  
     }
@@ -307,7 +307,7 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 
     
     private func setupPDFView(with document: PDFDocument) {
-        pdfView.backgroundColor = .lightGray
+        pdfView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.917, alpha: 0.9)
 //        pdfView.displayDirection = .horizontal
 //        pdfView.usePageViewController(true)
 
