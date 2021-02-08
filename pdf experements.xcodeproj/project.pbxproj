@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		302FE9DA258CEBFE00B84B35 /* SearchingStringAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302FE9D9258CEBFE00B84B35 /* SearchingStringAttributes.swift */; };
+		305CC3AA25D1C88E007F4E04 /* DocumentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305CC3A925D1C88E007F4E04 /* DocumentModel.swift */; };
+		305CC3AE25D1CA46007F4E04 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305CC3AD25D1CA46007F4E04 /* NetworkService.swift */; };
 		306D1FF325993E9B004CADEE /* Programming in Objective-C - 6th Edition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 306D1FF225993E9B004CADEE /* Programming in Objective-C - 6th Edition.pdf */; };
 		30BAD955254C067C0053D75F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAD954254C067C0053D75F /* AppDelegate.swift */; };
 		30BAD957254C067C0053D75F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BAD956254C067C0053D75F /* SceneDelegate.swift */; };
@@ -20,6 +22,8 @@
 
 /* Begin PBXFileReference section */
 		302FE9D9258CEBFE00B84B35 /* SearchingStringAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingStringAttributes.swift; sourceTree = "<group>"; };
+		305CC3A925D1C88E007F4E04 /* DocumentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentModel.swift; sourceTree = "<group>"; };
+		305CC3AD25D1CA46007F4E04 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		306D1FF225993E9B004CADEE /* Programming in Objective-C - 6th Edition.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Programming in Objective-C - 6th Edition.pdf"; sourceTree = "<group>"; };
 		30BAD951254C067C0053D75F /* pdf experements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pdf experements.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30BAD954254C067C0053D75F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -43,6 +47,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		305CC3A825D1C877007F4E04 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				305CC3A925D1C88E007F4E04 /* DocumentModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		305CC3AC25D1CA28007F4E04 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				305CC3AD25D1CA46007F4E04 /* NetworkService.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		30BAD948254C067C0053D75F = {
 			isa = PBXGroup;
 			children = (
@@ -62,6 +82,8 @@
 		30BAD953254C067C0053D75F /* pdf experements */ = {
 			isa = PBXGroup;
 			children = (
+				305CC3AC25D1CA28007F4E04 /* Network */,
+				305CC3A825D1C877007F4E04 /* model */,
 				30BAD954254C067C0053D75F /* AppDelegate.swift */,
 				30BAD956254C067C0053D75F /* SceneDelegate.swift */,
 				30BAD958254C067C0053D75F /* ViewController.swift */,
@@ -150,7 +172,9 @@
 			files = (
 				302FE9DA258CEBFE00B84B35 /* SearchingStringAttributes.swift in Sources */,
 				30BAD959254C067C0053D75F /* ViewController.swift in Sources */,
+				305CC3AA25D1C88E007F4E04 /* DocumentModel.swift in Sources */,
 				30BAD955254C067C0053D75F /* AppDelegate.swift in Sources */,
+				305CC3AE25D1CA46007F4E04 /* NetworkService.swift in Sources */,
 				30BAD957254C067C0053D75F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

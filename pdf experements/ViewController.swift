@@ -21,10 +21,21 @@ class ViewController: UIViewController, PDFDocumentDelegate {
 
 	var topResizableConstraint = NSLayoutConstraint()
 	var bottomResizableConstraint = NSLayoutConstraint()
+
+	let networkService = NetworkService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
+
+		networkService.fetch(url: URL(string: "http://vega.fcyb.mirea.ru/intellectphp/doc/804?view=rest-description")!) { result in
+			switch result {
+			case .success(let model):
+				print(model)
+			case .failure(let error):
+				print(error)
+			}
+		}
         
         gesture.addTarget(self, action: #selector(tapped))
         pdfView.addGestureRecognizer(gesture)
